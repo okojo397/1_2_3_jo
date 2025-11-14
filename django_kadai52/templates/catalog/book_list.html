@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>書籍一覧</h2>
+<form method="get" class="cluster" aria-label="書籍検索フォーム">
+  <label for="{{ form.q.id_for_label }}" class="visually-hidden">キーワード</label>
+  {{ form.q }}
+  <label for="{{ form.sort.id_for_label }}" class="visually-hidden">並び順</label>
+  {{ form.sort }}
+  <button type="submit">検索</button>
+</form>
+<p class="small">結果：{{ total_count }} 件</p>
+{% if object_list %}
+<ul class="stack">
+  {% for b in object_list %}
+  <li><strong>{{ b.title }}</strong>（{{ b.author }} / {{ b.genre }}）<br>発行日：{{ b.published_at }}<br><span class="muted">{{ b.summary|truncatechars:80 }}</span></li>
+  {% endfor %}
+</ul>
+{% else %}<p>該当する結果はありません。</p>{% endif %}
+{% if is_paginated %}
+<nav class="cluster" aria-label="ページャ">
+  {% if page_obj.has_previous %}
+  <a href="?page=1{% if qparams %}&{{ qparams }}{% endif %}">最初</a>
+  <a href="?page={{ page_obj.previous_page_number }}{% if qparams %}&{{ qparams }}{% endif %}">前へ</a>
+  {% endif %}
+  <span aria-current="page">Page {{ page_obj.number }} / {{ paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+  <a href="?page={{ page_obj.next_page_number }}{% if qparams %}&{{ qparams }}{% endif %}">次へ</a>
+  <a href="?page={{ paginator.num_pages }}{% if qparams %}&{{ qparams }}{% endif %}">最後</a>
+  {% endif %}
+</nav>
+{% endif %}
+{% endblock %}
